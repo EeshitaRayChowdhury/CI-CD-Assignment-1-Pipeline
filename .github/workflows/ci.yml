@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build-test:
+  build-test-analyze-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +28,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2
 
+      - name: Run Checkstyle analysis
+        run: mvn checkstyle:check
+
       - name: Build jar without tests
         run: mvn clean package -DskipTests
 
@@ -36,8 +39,20 @@ jobs:
           nohup java -jar target/*.jar > app.log 2>&1 &
           sleep 25
 
-      - name: Run tests
+      - name: Run automated tests
         run: mvn test
+
+      - name: Build Docker image
+        run: docker build -t customer-orders-api .
+
+      - name: Deploy container
+        run: |
+          docker run -d --name customer-orders-container -p 8082:8081 customer-orders-api
+          sleep 15
+          docker ps
+
+      - name: Verify deployed container
+        run: curl http://localhost:8081/customers || true
 
       - name: Upload test reports
         if: always()
@@ -55,6 +70,3 @@ jobs:
         with:
           name: app-log
           path: app.log
-
-      - name: Build Docker image
-        run: docker build -t customer-orders-api .

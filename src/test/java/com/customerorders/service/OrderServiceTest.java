@@ -5,7 +5,6 @@ import com.customerorders.dto.OrderDTO;
 import com.customerorders.dto.UpdateOrderRequest;
 import com.customerorders.entity.Customer;
 import com.customerorders.entity.OrderEntity;
-import com.customerorders.exception.BadRequestException;
 import com.customerorders.exception.ResourceNotFoundException;
 import com.customerorders.repository.CustomerRepository;
 import com.customerorders.repository.OrderRepository;
