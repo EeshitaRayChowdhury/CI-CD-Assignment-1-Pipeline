@@ -52,7 +52,7 @@ jobs:
           docker ps
 
       - name: Verify deployed container
-        run: curl http://localhost:8081/customers || true
+        run: curl http://localhost:8082/customers
 
       - name: Upload test reports
         if: always()
@@ -70,3 +70,9 @@ jobs:
         with:
           name: app-log
           path: app.log
+
+      - name: Check running container
+        run: docker ps
+
+      - name: Cleanup container
+        run: docker rm -f customer-orders-container
